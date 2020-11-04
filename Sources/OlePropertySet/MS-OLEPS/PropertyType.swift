@@ -189,7 +189,7 @@ public enum PropertyType: UInt16 {
     case arrayR8 = 0x2005
 
     /// VT_ARRAY | VT_CY 0x2006 Type is Array of CURRENCY, and the minimum property set version is 1.
-    case arrayCy = 0x2006
+    case arrayCY = 0x2006
 
     /// VT_ARRAY | VT_DATE 0x2007 Type is Array of DATE, and the minimum property set version is 1.
     case arrayDate = 0x2007

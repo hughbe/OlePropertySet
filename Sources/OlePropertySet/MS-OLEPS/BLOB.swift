@@ -23,7 +23,7 @@ public struct BLOB {
         
         let excessBytes = (dataStream.position - position) % 4
         if excessBytes != 0 {
-            dataStream.position += excessBytes
+            dataStream.position += 4 - excessBytes
         }
     }
 }

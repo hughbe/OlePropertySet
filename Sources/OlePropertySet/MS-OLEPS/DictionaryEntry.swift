@@ -35,11 +35,11 @@ public struct DictionaryEntry {
         /// characters from the code page identified by the CodePage property and MUST NOT be padded.
         if codePage == CodePageString.CP_WINUNICODE {
             let position = dataStream.position
-            self.name = try dataStream.readString(count: Int(self.length) - 1, encoding: .utf16LittleEndian)!
+            self.name = try dataStream.readString(count: Int(self.length * 2) - 2, encoding: .utf16LittleEndian)!
             dataStream.position += 2
             let excessBytes = (dataStream.position - position) % 4
             if excessBytes != 0 {
-                dataStream.position += excessBytes
+                dataStream.position += 4 - excessBytes
             }
         } else {
             self.name = try dataStream.readString(count: Int(self.length) - 1, encoding: .ascii)!

@@ -35,7 +35,7 @@ public struct Dictionary: Property {
         /// Padding (variable): Padding, if necessary, to a total length that is a multiple of 4 bytes.
         let excessBytes = (dataStream.position - position) % 4
         if excessBytes != 0 {
-            dataStream.position += excessBytes
+            dataStream.position += 4 - excessBytes
         }
     }
 }

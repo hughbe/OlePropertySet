@@ -1,11 +1,11 @@
 //
-//  File.swift
+//  IndirectPropertyName.swift
 //  
 //
 //  Created by Hugh Bellamy on 03/11/2020.
 //
 
-import Foundation
+import DataStream
 
 /// [MS-OLEPS] 2.10 IndirectPropertyName
 /// The IndirectPropertyName packet represents the name of a stream or storage as used in the representation of the following property types in a
@@ -15,4 +15,12 @@ import Foundation
 /// Indirectproperty = "prop" propertyIdentifier
 /// Where PropertyIdentifier is the decimal string representation of the property identifier. This property identifier MUST be a valid PropertyIdentifier
 /// value and MUST NOT be the property identifier for any of the special properties specified in section 2.18.
-public typealias IndirectPropertyName = CodePageString
+public struct IndirectPropertyName {
+    public let name: String
+    public let type: PropertyType
+
+    public init(dataStream: inout DataStream, codePage: UInt16, isVariant: Bool, type: PropertyType) throws {
+        self.name = try CodePageString(dataStream: &dataStream, codePage: codePage, isVariant: isVariant).characters
+        self.type = type
+    }
+}

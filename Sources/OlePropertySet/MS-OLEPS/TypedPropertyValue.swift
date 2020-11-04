@@ -28,11 +28,26 @@ public struct TypedPropertyValue: Property {
         /// Padding (2 bytes): MUST be set to zero, and any nonzero value SHOULD be rejected.
         self.padding = try dataStream.read(endianess: .littleEndian)
         
+        let position = dataStream.position
         func readVector<T>(readFunc: (inout DataStream) throws -> T) throws -> [T] {
             let header = try VectorHeader(dataStream: &dataStream)
             var results: [T] = []
             results.reserveCapacity(Int(header.length))
             for _ in 0..<header.length {
+                let result = try readFunc(&dataStream)
+                results.append(result)
+            }
+
+            return results
+        }
+        func readArray<T>(readFunc: (inout DataStream) throws -> T) throws -> [T] {
+            let header = try ArrayHeader(dataStream: &dataStream)
+            
+            let size = header.dimensions.map { $0.size }.reduce(1, *)
+            
+            var results: [T] = []
+            results.reserveCapacity(Int(size))
+            for _ in 0..<size {
                 let result = try readFunc(&dataStream)
                 results.append(result)
             }
@@ -51,8 +66,6 @@ public struct TypedPropertyValue: Property {
         case .i2:
             /// VT_I2 (0x0002) MUST be a 16-bit signed integer, followed by zero padding to 4 bytes.
             self.value = try dataStream.read(endianess: .littleEndian) as Int16
-            let _: UInt8 = try dataStream.read() as UInt8
-            let _: UInt8 = try dataStream.read() as UInt8
         case .i4:
             /// VT_I4 (0x0003) MUST be a 32-bit signed integer.
             self.value = try dataStream.read(endianess: .littleEndian) as Int32
@@ -87,26 +100,12 @@ public struct TypedPropertyValue: Property {
         case .i1:
             /// VT_I1 (0x0010) MUST be a 1-byte signed integer, followed by zero padding to 4 bytes.
             self.value = try dataStream.read() as Int8
-            if !isVariant {
-                let _: UInt8 = try dataStream.read() as UInt8
-                let _: UInt8 = try dataStream.read() as UInt8
-                let _: UInt8 = try dataStream.read() as UInt8
-            }
         case .ui1:
             /// VT_UI1 (0x0011) MUST be a 1-byte unsigned integer, followed by zero padding to 4 bytes.
             self.value = try dataStream.read() as UInt8
-            if !isVariant {
-                let _: UInt8 = try dataStream.read() as UInt8
-                let _: UInt8 = try dataStream.read() as UInt8
-                let _: UInt8 = try dataStream.read() as UInt8
-            }
         case .ui2:
             /// VT_UI2 (0x0012) MUST be a 2-byte unsigned integer, followed by zero padding to 4 bytes.
             self.value = try dataStream.read() as UInt16
-            if !isVariant {
-                let _: UInt8 = try dataStream.read() as UInt8
-                let _: UInt8 = try dataStream.read() as UInt8
-            }
         case .ui4:
             /// VT_UI4 (0x0013) MUST be a 4-byte unsigned integer.
             self.value = try dataStream.read() as UInt32
@@ -138,15 +137,22 @@ public struct TypedPropertyValue: Property {
         case .blob:
             /// VT_BLOB (0x0041) MUST be a BLOB.
             self.value = try BLOB(dataStream: &dataStream).bytes
-        case .storage:
+        case .stream:
             /// VT_STREAM (0x0042) MUST be an IndirectPropertyName. The storage representing the (nonsimple) property set MUST have a
             /// stream element with this name.
             guard let codePage = codePage else {
                 throw PropertySetError.corrupted
             }
+            
+            self.value = try IndirectPropertyName(dataStream: &dataStream, codePage: codePage, isVariant: isVariant, type: type)
+        case .storage:
+            /// VT_STORAGE (0x0043) MUST be an IndirectPropertyName. The storage representing the (nonsimple) property set MUST have
+            /// a storage element with this name.
+            guard let codePage = codePage else {
+                throw PropertySetError.corrupted
+            }
 
-            let _: IndirectPropertyName = try IndirectPropertyName(dataStream: &dataStream, codePage: codePage, isVariant: isVariant)
-            fatalError("VT_STREAM")
+            self.value = try IndirectPropertyName(dataStream: &dataStream, codePage: codePage, isVariant: isVariant, type: type)
         case .streamedObject:
             /// VT_STREAMED_OBJECT (0x0044) MUST be an IndirectPropertyName. The storage representing the (nonsimple) property set
             /// MUST have a stream element with this name.
@@ -154,8 +160,7 @@ public struct TypedPropertyValue: Property {
                 throw PropertySetError.corrupted
             }
 
-            let _: IndirectPropertyName = try IndirectPropertyName(dataStream: &dataStream, codePage: codePage, isVariant: isVariant)
-            fatalError("VT_STREAMED_OBJECT")
+            self.value =  try IndirectPropertyName(dataStream: &dataStream, codePage: codePage, isVariant: isVariant, type: type)
         case .storedObject:
             /// VT_STORED_OBJECT (0x0045) MUST be an IndirectPropertyName. The storage representing the (nonsimple) property set
             /// MUST have a storage element with this name.
@@ -163,8 +168,7 @@ public struct TypedPropertyValue: Property {
                 throw PropertySetError.corrupted
             }
 
-            let _: IndirectPropertyName = try IndirectPropertyName(dataStream: &dataStream, codePage: codePage, isVariant: isVariant)
-            fatalError("VT_STORED_OBJECT")
+            self.value =  try IndirectPropertyName(dataStream: &dataStream, codePage: codePage, isVariant: isVariant, type: self.type)
         case .blobObject:
             /// VT_BLOB_OBJECT (0x0046) MUST be a BLOB.
             self.value = try BLOB(dataStream: &dataStream).bytes
@@ -185,12 +189,7 @@ public struct TypedPropertyValue: Property {
         case .vectorI2:
             /// VT_VECTOR | VT_I2 (0x1002) MUST be a VectorHeader followed by a sequence of 16-bit signed integers, followed by zero padding to a
             /// total length that is a multiple of 4 bytes.
-            self.value = try readVector { dataStream -> Int16 in
-                let value: Int16 = try dataStream.read(endianess: .littleEndian)
-                let _: UInt8 = try dataStream.read() as UInt8
-                let _: UInt8 = try dataStream.read() as UInt8
-                return value
-            }
+            self.value = try readVector { try $0.read(endianess: .littleEndian) as Int16 }
         case .vectorI4:
             /// VT_VECTOR | VT_I4 (0x1003) MUST be a VectorHeader followed by a sequence of 32-bit signed integers.
             self.value = try readVector { try $0.read(endianess: .littleEndian) as Int32 }
@@ -227,32 +226,15 @@ public struct TypedPropertyValue: Property {
         case .vectorI1:
             /// VT_VECTOR | VT_I1 (0x1010) MUST be a VectorHeader followed by a sequence of 1-byte signed integers, followed by zero padding to a
             /// total length that is a multiple of 4 bytes.
-            self.value = try readVector { dataStream -> Int8 in
-                let value: Int8 = try dataStream.read()
-                let _: UInt8 = try dataStream.read() as UInt8
-                let _: UInt8 = try dataStream.read() as UInt8
-                let _: UInt8 = try dataStream.read() as UInt8
-                return value
-            }
+            self.value = try readVector { try $0.read() as Int8 }
         case .vectorUI1:
             /// VT_VECTOR | VT_UI1 (0x1011) MUST be a VectorHeader followed by a sequence of 1-byte unsigned integers, followed by zero padding
             /// to a total length that is a multiple of 4 bytes.
-            self.value = try readVector { dataStream -> UInt8 in
-                let value: UInt8 = try dataStream.read()
-                let _: UInt8 = try dataStream.read() as UInt8
-                let _: UInt8 = try dataStream.read() as UInt8
-                let _: UInt8 = try dataStream.read() as UInt8
-                return value
-            }
+            self.value = try readVector { try $0.read() as UInt8 }
         case .vectorUI2:
             /// VT_VECTOR | VT_UI2 (0x1012) MUST be a VectorHeader followed by a sequence of 2-byte unsigned integers, followed by zero padding
             /// to a total length that is a multiple of 4 bytes.
-            self.value = try readVector { dataStream -> UInt16 in
-                let value: UInt16 = try dataStream.read(endianess: .littleEndian)
-                let _: UInt8 = try dataStream.read() as UInt8
-                let _: UInt8 = try dataStream.read() as UInt8
-                return value
-            }
+            self.value = try readVector { try $0.read(endianess: .littleEndian) as UInt16 }
         case .vectorUI4:
             /// VT_VECTOR | VT_UI4 (0x1013) MUST be a VectorHeader followed by a sequence of 4-byte unsigned integers.
             self.value = try readVector { try $0.read(endianess: .littleEndian) as UInt32 }
@@ -281,31 +263,76 @@ public struct TypedPropertyValue: Property {
         case .vectorClsid:
             /// VT_VECTOR | VT_CLSID (0x1048) MUST be a VectorHeader followed by a sequence of GUID (Packet Version) packets.
             self.value = try readVector { try GUID(dataStream: &$0) }
-        default:
-            /// VT_ARRAY | VT_I2 (0x2002) MUST be an ArrayHeader followed by a sequence of 16-bit signed integers, followed by zero padding to a
-            /// total length that is a multiple of 4 bytes.
+        case .arrayI2:
+            /// VT_ARRAY | VT_I2 (0x2002) MUST be an ArrayHeader followed by a sequence of 16-bit signed integers, followed by zero
+            /// padding to a total length that is a multiple of 4 bytes.
+            self.value = try readArray { try $0.read(endianess: .littleEndian) as Int16 }
+        case .arrayI4:
             /// VT_ARRAY | VT_I4 (0x2003) MUST be an ArrayHeader followed by a sequence of 32-bit signed integers.
-            /// VT_ARRAY | VT_R4 (0x2004) MUST be an ArrayHeader followed by a sequence of 4-byte (singleprecision) IEEE floating-point numbers.
-            /// VT_ARRAY | VT_R8 (0x2005) MUST be an ArrayHeader followed by a sequence of 8-byte (doubleprecision) IEEE floating-point numbers.
-            /// VT_ARRAY | VT_CY (0x2006) MUST be an ArrayHeader followed by a sequence of CURRENCY (Packet Version) packets.
+            self.value = try readArray { try $0.read(endianess: .littleEndian) as Int32 }
+        case .arrayR4:
+            /// VT_ARRAY | VT_R4 (0x2004) MUST be an ArrayHeader followed by a sequence of 4-byte (singleprecision) IEEE floating-point
+            /// numbers.
+            self.value = try readArray { try $0.readFloat(endianess: .littleEndian) }
+        case .arrayR8:
+            /// VT_ARRAY | VT_R8 (0x2005) MUST be an ArrayHeader followed by a sequence of 8-byte (doubleprecision) IEEE floating-point
+            /// numbers.
+            self.value = try readArray { try $0.readDouble(endianess: .littleEndian) }
+        case .arrayCY:
+            /// VT_ARRAY | VT_CY (0x2006) MUST be an ArrayHeader followed by a sequence of CURRENCY (Packet Version) packets.ers.
+            self.value = try readArray { try CURRENCY(dataStream: &$0).doubleValue }
+        case .arrayDate:
             /// VT_ARRAY | VT_DATE (0x2007) MUST be an ArrayHeader followed by a sequence of DATE (Packet Version) packets.
+            self.value = try readArray { try DATE(dataStream: &$0).dateValue }
+        case .arrayBstr:
             /// VT_ARRAY | VT_BSTR (0x2008) MUST be an ArrayHeader followed by a sequence of CodePageString packets.
+            guard let codePage = codePage else {
+                throw PropertySetError.corrupted
+            }
+
+            self.value = try readArray { try CodePageString(dataStream: &$0, codePage: codePage, isVariant: true) }
+        case .arrayError:
             /// VT_ARRAY | VT_ERROR (0x200A) MUST be an ArrayHeader followed by a sequence of 32-bit unsigned integers representing HRESULTs,
             /// as specified in [MS-DTYP] section 2.2.18.
+            self.value = try readArray { try $0.read(endianess: .littleEndian) as HRESULT }
+        case .arrayBool:
             /// VT_ARRAY | VT_BOOL (0x200B) MUST be an ArrayHeader followed by a sequence of VARIANT_BOOL as specified in [MS-OAUT]
             /// section 2.2.27, followed by zero padding to a total length that is a multiple of 4 bytes.
+            self.value = try readArray { try VARIANT_BOOL(dataStream: &$0).boolValue }
+        case .arrayVariant:
             /// VT_ARRAY | VT_VARIANT (0x200C) MUST be an ArrayHeader followed by a sequence of TypedPropertyValue packets.
+            self.value = try readArray { try TypedPropertyValue(dataStream: &$0, codePage: codePage, isVariant: true).value }
+        case .arrayDecimal:
             /// VT_ARRAY | VT_DECIMAL (0x200E) MUST be an ArrayHeader followed by a sequence of DECIMAL (Packet Version) packets.
+            self.value = try readArray { try DECIMAL(dataStream: &$0).doubleValue }
+        case .arrayI1:
             /// VT_ARRAY | VT_I1 (0x2010) MUST be an ArrayHeader followed by a sequence of 1-byte signed integers, followed by zero padding to a
             /// total length that is a multiple of 4 bytes.
+            self.value = try readArray { try $0.read() as Int8 }
+        case .arrayUI1:
             /// VT_ARRAY | VT_UI1 (0x2011) MUST be an ArrayHeader followed by a sequence of 1-byte unsigned integers, followed by zero padding
             /// to a total length that is a multiple of 4 bytes
+            self.value = try readArray { try $0.read() as UInt8 }
+        case .arrayUI2:
             /// VT_ARRAY | VT_UI2 (0x2012) MUST be an ArrayHeader followed by a sequence of 2-byte unsigned integers, followed by zero padding
             /// to a total length that is a multiple of 4 bytes.
+            self.value = try readArray { try $0.read() as UInt16 }
+        case .arrayUI4:
             /// VT_ARRAY | VT_UI4 (0x2013) MUST be an ArrayHeader followed by a sequence of 4-byte unsigned integers.
+            self.value = try readArray { try $0.read() as UInt32 }
+        case .arrayInt:
             /// VT_ARRAY | VT_INT (0x2016) MUST be an ArrayHeader followed by a sequence of 4-byte signed integers.
+            self.value = try readArray { try $0.read() as Int32 }
+        case .arrayUInt:
             /// VT_ARRAY | VT_UINT (0x2017) MUST be an ArrayHeader followed by a sequence of 4-byte unsigned integers.
-            fatalError("NYI: \(type)")
+            self.value = try readArray { try $0.read() as UInt32 }
+        }
+        
+        if !isVariant && self.type != .vectorVariant && self.type != .arrayVariant {
+            let excessBytes = (dataStream.position - position) % 4
+            if excessBytes != 0 {
+                dataStream.position += 4 - excessBytes
+            }
         }
     }
 }

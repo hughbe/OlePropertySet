@@ -19,6 +19,6 @@ public struct VersionedStream {
         self.versionGuid = try GUID(dataStream: &dataStream)
         
         /// StreamName (variable): MUST be an IndirectPropertyName.
-        self.streamName = try IndirectPropertyName(dataStream: &dataStream, codePage: codePage, isVariant: isVariant)
+        self.streamName = try IndirectPropertyName(dataStream: &dataStream, codePage: codePage, isVariant: isVariant, type: .versionedStream)
     }
 }
