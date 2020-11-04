@@ -1,0 +1,43 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "CompoundFileReader",
+        "repositoryURL": "https://github.com/hughbe/CompoundFileReader",
+        "state": {
+          "branch": null,
+          "revision": "954cdeae8d4864b3078754912517988236e2b08c",
+          "version": "1.0.7"
+        }
+      },
+      {
+        "package": "DataStream",
+        "repositoryURL": "https://github.com/hughbe/DataStream",
+        "state": {
+          "branch": null,
+          "revision": "6136e69031194a6518cdc3316d79ca83a0a2acfd",
+          "version": "1.2.1"
+        }
+      },
+      {
+        "package": "OleAutomationDataTypes",
+        "repositoryURL": "https://github.com/hughbe/OleAutomationDataTypes",
+        "state": {
+          "branch": null,
+          "revision": "41e199d65c43341876802f47d31f0f864ff20c0a",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "WindowsDataTypes",
+        "repositoryURL": "https://github.com/hughbe/WindowsDataTypes",
+        "state": {
+          "branch": null,
+          "revision": "82b4b6691dfa14d59663500150521114346328c0",
+          "version": "1.0.6"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
