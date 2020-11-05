@@ -128,6 +128,7 @@ final class DumpFileTests: XCTestCase {
         for (name, fileExtension, storage) in [
             ("hughbe/sample", "doc", "\u{0005}SummaryInformation"),
             ("hughbe/sample", "doc", "\u{0005}DocumentSummaryInformation"),
+            ("hughbe/7z1900-x64", "msi", "\u{0005}SummaryInformation"),
             ("ironfede/openmcdf/_Test", "ppt", "\u{0005}SummaryInformation"),
             ("ironfede/openmcdf/_Test", "ppt", "\u{0005}DocumentSummaryInformation"),
             ("ironfede/openmcdf/2_MB-W", "ppt", "\u{0005}SummaryInformation"),
