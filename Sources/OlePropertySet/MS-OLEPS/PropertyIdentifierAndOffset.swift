@@ -10,7 +10,7 @@ import DataStream
 /// [MS-OLEPS] 2.19 PropertyIdentifierAndOffset
 /// The PropertyIdentifierAndOffset packet is used in the PropertySet packet to represent a property identifier and the byte offset of the
 /// property in the PropertySet packet.
-public struct PropertyIdentifierAndOffset {
+internal struct PropertyIdentifierAndOffset {
     public let propertyIdentifier: PropertyIdentifier
     public let offset: UInt32
     

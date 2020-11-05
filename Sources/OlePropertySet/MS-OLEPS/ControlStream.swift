@@ -15,9 +15,11 @@ public struct ControlStream {
     public let reserved1: UInt16
     public let reserved2: UInt16
     public let applicationState: UInt32
-    public let clsid: GUID
+    public let clsid: GUID?
     
-    public init(dataStream: inout DataStream) throws {
+    public init(dataStream: inout DataStream, size: Int) throws {
+        let position = dataStream.position
+
         /// Reserved1 (2 bytes): MUST be set to zero, and nonzero values MUST be rejected.
         self.reserved1 = try dataStream.read(endianess: .littleEndian)
         if self.reserved1 != 0x0000 {
@@ -33,6 +35,14 @@ public struct ControlStream {
         
         /// CLSID (16 bytes): An application-provided value that MUST NOT be interpreted by the OLEPS implementation. If the application
         /// did not provide a value, it SHOULD be absent.
-        self.clsid = try GUID(dataStream: &dataStream)
+        if dataStream.position - position == size {
+            self.clsid = nil
+        } else {
+            self.clsid = try GUID(dataStream: &dataStream)
+            
+            if dataStream.position - position != size {
+                throw PropertySetError.corrupted
+            }
+        }
     }
 }

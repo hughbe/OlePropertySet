@@ -18,3 +18,10 @@ import Foundation
 /// LOCALE_PROPERTY_IDENTIFIER 0x80000000 property identifier for the Locale property.
 /// BEHAVIOR_PROPERTY_IDENTIFIER 0x80000003 property identifier for the Behavior property.
 public typealias PropertyIdentifier = UInt32
+
+public let DICTIONARY_PROPERTY_IDENTIFIER = 0x00000000
+public let CODEPAGE_PROPERTY_IDENTIFIER = 0x00000001
+public let LOCALE_PROPERTY_IDENTIFIER = 0x80000000
+public let MODIFY_TIME_PROPERTY_IDENTIFIER = 0x80000001
+public let SECURITY_PROPERTY_IDENTIFIER = 0x80000002
+public let BEHAVIOR_PROPERTY_IDENTIFIER = 0x80000003

@@ -11,12 +11,14 @@ import WindowsDataTypes
 
 /// [MS-OLEPS] 2.15 TypedPropertyValue
 /// The TypedPropertyValue structure represents the typed value of a property in a property set.
-public struct TypedPropertyValue: Property {
+internal struct TypedPropertyValue {
     public let type: PropertyType
     public let padding: UInt16
     public let value: Any?
     
     public init(dataStream: inout DataStream, codePage: UInt16?, isVariant: Bool = false) throws {
+        let startPosition = dataStream.position
+
         /// Type (2 bytes): MUST be a value from the PropertyType enumeration, indicating the type of property represented.
         let typeRaw: UInt16 = try dataStream.read(endianess: .littleEndian)
         guard let type = PropertyType(rawValue: typeRaw) else {
@@ -28,7 +30,6 @@ public struct TypedPropertyValue: Property {
         /// Padding (2 bytes): MUST be set to zero, and any nonzero value SHOULD be rejected.
         self.padding = try dataStream.read(endianess: .littleEndian)
         
-        let position = dataStream.position
         func readVector<T>(readFunc: (inout DataStream) throws -> T) throws -> [T] {
             let header = try VectorHeader(dataStream: &dataStream)
             var results: [T] = []
@@ -66,6 +67,8 @@ public struct TypedPropertyValue: Property {
         case .i2:
             /// VT_I2 (0x0002) MUST be a 16-bit signed integer, followed by zero padding to 4 bytes.
             self.value = try dataStream.read(endianess: .littleEndian) as Int16
+            let _: UInt8 = try dataStream.read()
+            let _: UInt8 = try dataStream.read()
         case .i4:
             /// VT_I4 (0x0003) MUST be a 32-bit signed integer.
             self.value = try dataStream.read(endianess: .littleEndian) as Int32
@@ -100,12 +103,20 @@ public struct TypedPropertyValue: Property {
         case .i1:
             /// VT_I1 (0x0010) MUST be a 1-byte signed integer, followed by zero padding to 4 bytes.
             self.value = try dataStream.read() as Int8
+            let _: UInt8 = try dataStream.read()
+            let _: UInt8 = try dataStream.read()
+            let _: UInt8 = try dataStream.read()
         case .ui1:
             /// VT_UI1 (0x0011) MUST be a 1-byte unsigned integer, followed by zero padding to 4 bytes.
             self.value = try dataStream.read() as UInt8
+            let _: UInt8 = try dataStream.read()
+            let _: UInt8 = try dataStream.read()
+            let _: UInt8 = try dataStream.read()
         case .ui2:
             /// VT_UI2 (0x0012) MUST be a 2-byte unsigned integer, followed by zero padding to 4 bytes.
             self.value = try dataStream.read() as UInt16
+            let _: UInt8 = try dataStream.read()
+            let _: UInt8 = try dataStream.read()
         case .ui4:
             /// VT_UI4 (0x0013) MUST be a 4-byte unsigned integer.
             self.value = try dataStream.read() as UInt32
@@ -329,10 +340,7 @@ public struct TypedPropertyValue: Property {
         }
         
         if !isVariant && self.type != .vectorVariant && self.type != .arrayVariant {
-            let excessBytes = (dataStream.position - position) % 4
-            if excessBytes != 0 {
-                dataStream.position += 4 - excessBytes
-            }
+            try dataStream.readPadding(fromStart: startPosition)
         }
     }
 }

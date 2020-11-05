@@ -15,6 +15,8 @@ public struct ClipboardData {
     public let data: [UInt8]
     
     public init(dataStream: inout DataStream) throws {
+        let startPosition = dataStream.position
+
         /// Size (4 bytes): The total size in bytes of the Format and Data fields, not including padding (if any).
         self.size = try dataStream.read(endianess: .littleEndian)
         
@@ -22,12 +24,7 @@ public struct ClipboardData {
         self.format = try dataStream.read(endianess: .littleEndian)
         
         /// Data (variable): MUST be an array of bytes, followed by zero padding to a multiple of 4 bytes.
-        let position = dataStream.position
         self.data = try dataStream.readBytes(count: Int(self.size))
-        
-        let excessBytes = (dataStream.position - position) % 4
-        if excessBytes != 0 {
-            dataStream.position += 4 - excessBytes
-        }
+        try dataStream.readPadding(fromStart: startPosition)
     }
 }

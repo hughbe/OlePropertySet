@@ -9,8 +9,8 @@ import DataStream
 
 /// [MS-OLEPS] 2.5 CodePageString
 /// The CodePageString packet represents a string whose encoding depends on the value of the property set's CodePage property.
-public struct CodePageString {
-    public static let CP_WINUNICODE: Int16 = 0x04B0
+internal struct CodePageString {
+    public static let CP_WINUNICODE: UInt16 = 0x04B0
     public let size: UInt32
     public let characters: String
     
@@ -35,7 +35,7 @@ public struct CodePageString {
         if self.size == 0 {
             self.characters = ""
         } else {
-            let position = dataStream.position
+            let startPosition = dataStream.position
             if codePage == CodePageString.CP_WINUNICODE {
                 self.characters = try dataStream.readString(count: Int(self.size) - 2, encoding: .utf16LittleEndian)!
                 dataStream.position += 2
@@ -45,10 +45,7 @@ public struct CodePageString {
             }
             
             if !isVariant {
-                let excessBytes = (dataStream.position - position) % 4
-                if excessBytes != 0 {
-                    dataStream.position += 4 - excessBytes
-                }
+                try dataStream.readPadding(fromStart: startPosition)
             }
         }
     }

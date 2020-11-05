@@ -9,7 +9,7 @@ import DataStream
 
 /// [MS-OLEPS] 2.7 UnicodeString
 /// The UnicodeString packet represents a Unicode string.
-public struct UnicodeString {
+internal struct UnicodeString {
     public let length: UInt32
     public let characters: String
     
@@ -24,16 +24,17 @@ public struct UnicodeString {
         if self.length == 0 {
             self.characters = ""
         } else {
-            let position = dataStream.position
+            let startPosition = dataStream.position
             self.characters = try dataStream.readString(count: Int(self.length) - 1, encoding: .utf16LittleEndian)!
-            dataStream.position += 2
             
-            if !isVariant {
-                let excessBytes = (dataStream.position - position) % 4
-                if excessBytes != 0 {
-                    dataStream.position += 4 - excessBytes
-                }
+            let newPosition = dataStream.position + 2
+            if newPosition > dataStream.count {
+                throw PropertySetError.corrupted
             }
+
+            dataStream.position = newPosition
+            
+            try dataStream.readPadding(fromStart: startPosition)
         }
     }
 }

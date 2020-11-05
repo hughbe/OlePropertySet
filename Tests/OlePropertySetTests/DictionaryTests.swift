@@ -15,7 +15,7 @@ final class DictionaryTests: XCTestCase {
                 /* NumEntries */     0x06, 0x00, 0x00, 0x00,
                 /* Entry 0 Offset */ 0x04, 0x00, 0x00, 0x00,
                 /* Entry 0 Length */ 0x0E, 0x00, 0x00, 0x00,
-                /* Entry 0 Name */   0x44, 0x00, 0x69, 0x00, 0x73, 0x00, 0x70, 0x00, 0x6C, 0x00, 0x61, 0x00, 0x79, 0x00, 0x33, 0x00, 0x6F, 0x00, 0x6C, 0x00, 0x6F, 0x00, 0x75, 0x00, 0x72, 0x00, 0x00, 0x00,
+                /* Entry 0 Name */   0x44, 0x00, 0x69, 0x00, 0x73, 0x00, 0x70, 0x00, 0x6C, 0x00, 0x61, 0x00, 0x79, 0x00, 0x43, 0x00, 0x6F, 0x00, 0x6C, 0x00, 0x6F, 0x00, 0x75, 0x00, 0x72, 0x00, 0x00, 0x00,
                 
                 /* Entry 1 Offset */ 0x06, 0x00, 0x00, 0x00,
                 /* Entry 1 Length */ 0x09, 0x00, 0x00, 0x00,
@@ -39,8 +39,20 @@ final class DictionaryTests: XCTestCase {
             ])
             var dataStream = DataStream(data: data)
             let dictionary = try Dictionary(dataStream: &dataStream, codePage: 0x04B0)
-            print(dictionary)
-            XCTAssertTrue(dataStream.remainingCount == 0)
+            XCTAssertEqual(6, dictionary.identifierMapping.count)
+            XCTAssertEqual("CaseSensitive", dictionary.identifierMapping[0x27])
+            XCTAssertEqual("DisplayColour", dictionary.identifierMapping[0x04])
+            XCTAssertEqual("CASESENSITIVE", dictionary.identifierMapping[0x92])
+            XCTAssertEqual("MyStream", dictionary.identifierMapping[0x06])
+            XCTAssertEqual("Price(GBP)", dictionary.identifierMapping[0x07])
+            XCTAssertEqual("MyStorage", dictionary.identifierMapping[0x0C])
+            XCTAssertEqual(0x27, dictionary.nameMapping["CaseSensitive"])
+            XCTAssertEqual(0x04, dictionary.nameMapping["DisplayColour"])
+            XCTAssertEqual(0x92, dictionary.nameMapping["CASESENSITIVE"])
+            XCTAssertEqual(0x06, dictionary.nameMapping["MyStream"])
+            XCTAssertEqual(0x07, dictionary.nameMapping["Price(GBP)"])
+            XCTAssertEqual(0x0C, dictionary.nameMapping["MyStorage"])
+            XCTAssertEqual(0, dataStream.remainingCount)
         }
     }
 

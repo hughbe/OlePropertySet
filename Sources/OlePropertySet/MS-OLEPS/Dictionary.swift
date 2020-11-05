@@ -9,33 +9,31 @@ import DataStream
 
 /// [MS-OLEPS] 2.17 Dictionary
 /// The Dictionary packet represents all mappings between property identifiers and property names in a property set.
-public struct Dictionary: Property {
-    public let numEntries: UInt32
-    public let entries: [DictionaryEntry]
-    
-    public var value: Any? {
-        entries
-    }
+public struct Dictionary {
+    public let identifierMapping: [PropertyIdentifier: String]
+    public let nameMapping: [String: PropertyIdentifier]
     
     public init(dataStream: inout DataStream, codePage: UInt16) throws {
-        let position = dataStream.position
+        let startPosition = dataStream.position
 
         /// NumEntries (4 bytes): (4 bytes) An unsigned integer representing the number of entries in the Dictionary. self.
-        self.numEntries = try dataStream.read(endianess: .littleEndian)
+        let numEntries: UInt32 = try dataStream.read(endianess: .littleEndian)
         
         /// Entry 1 (variable): All Entry fields MUST be a sequence of DictionaryEntry packets. Entries are not required to appear in any particular order.
-        var entries: [DictionaryEntry] = []
-        for _ in 0..<self.numEntries {
+        var identifierMapping: [PropertyIdentifier: String] = [:]
+        identifierMapping.reserveCapacity(Int(numEntries))
+        var nameMapping: [String: PropertyIdentifier] = [:]
+        nameMapping.reserveCapacity(Int(numEntries))
+        for _ in 0..<numEntries {
             let entry = try DictionaryEntry(dataStream: &dataStream, codePage: codePage)
-            entries.append(entry)
+            identifierMapping[entry.propertyIdentifier] = entry.name
+            nameMapping[entry.name] = entry.propertyIdentifier
         }
         
-        self.entries = entries
+        self.identifierMapping = identifierMapping
+        self.nameMapping = nameMapping
         
         /// Padding (variable): Padding, if necessary, to a total length that is a multiple of 4 bytes.
-        let excessBytes = (dataStream.position - position) % 4
-        if excessBytes != 0 {
-            dataStream.position += 4 - excessBytes
-        }
+        try dataStream.readPadding(fromStart: startPosition)
     }
 }

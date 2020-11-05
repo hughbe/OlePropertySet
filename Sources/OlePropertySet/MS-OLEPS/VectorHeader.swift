@@ -9,7 +9,7 @@ import DataStream
 
 /// [MS-OLEPS] 2.14.2 VectorHeader
 /// The VectorHeader packet represents the number of scalar values in a vector property type.
-public struct VectorHeader {
+internal struct VectorHeader {
     public let length: UInt32
     
     public init(dataStream: inout DataStream) throws {

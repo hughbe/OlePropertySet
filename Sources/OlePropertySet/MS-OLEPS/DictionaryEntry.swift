@@ -9,7 +9,7 @@ import DataStream
 
 /// [MS-OLEPS] 2.16 DictionaryEntry
 /// The DictionaryEntry packet represents a mapping between a property identifier and a property name.
-public struct DictionaryEntry {
+internal struct DictionaryEntry {
     public let propertyIdentifier: PropertyIdentifier
     public let length: UInt32
     public let name: String
@@ -34,16 +34,23 @@ public struct DictionaryEntry {
         /// 16-bit Unicode characters, followed by zero padding to a multiple of 4 bytes. Otherwise, MUST be a null-terminated array of 8-bit
         /// characters from the code page identified by the CodePage property and MUST NOT be padded.
         if codePage == CodePageString.CP_WINUNICODE {
-            let position = dataStream.position
+            let startPosition = dataStream.position
             self.name = try dataStream.readString(count: Int(self.length * 2) - 2, encoding: .utf16LittleEndian)!
-            dataStream.position += 2
-            let excessBytes = (dataStream.position - position) % 4
-            if excessBytes != 0 {
-                dataStream.position += 4 - excessBytes
+            let newPosition = dataStream.position + 2
+            if newPosition > dataStream.count {
+                throw PropertySetError.corrupted
             }
+
+            dataStream.position = newPosition
+            try dataStream.readPadding(fromStart: startPosition)
         } else {
             self.name = try dataStream.readString(count: Int(self.length) - 1, encoding: .ascii)!
-            dataStream.position += 1
+            let newPosition = dataStream.position + 1
+            if newPosition > dataStream.count {
+                throw PropertySetError.corrupted
+            }
+
+            dataStream.position = newPosition
         }
     }
 }

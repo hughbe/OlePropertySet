@@ -9,7 +9,7 @@ import DataStream
 
 /// [MS-OLEPS] 2.14.4 ArrayHeader
 /// The ArrayHeader packet represents the type and dimensions of an array property type.
-public struct ArrayHeader {
+internal struct ArrayHeader {
     public let type: UInt32
     public let numDimensions: UInt32
     public let dimensions: [ArrayDimension]

@@ -9,7 +9,7 @@ import DataStream
 
 /// [MS-OLEPS] 2.14.3 ArrayDimension
 /// The ArrayDimension packet represents the size and index offset of a dimension of an array property type.
-public struct ArrayDimension {
+internal struct ArrayDimension {
     public let size: UInt32
     public let indexOffset: UInt32
     

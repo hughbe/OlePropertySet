@@ -62,34 +62,50 @@ final class DumpFileTests: XCTestCase {
                 return (value as! [Int16]).hexString
              } else if type(of: value) == [Int8].self {
                 return (value as! [Int8]).hexString
+             } else if type(of: value) == Double.self {
+                return (value as! Double).description
+             } else if type(of: value) == Float.self {
+                return (value as! Float).description
              } else if type(of: value) == ClipboardData.self {
                 let clipboardData = (value as! ClipboardData)
                 return "ClipboardData(format: \(clipboardData.format.hexString), data: \(clipboardData.data.hexString))"
+             } else if type(of: value) == IndirectPropertyName.self {
+                let indirectPropertyName = (value as! IndirectPropertyName)
+                return "IndirectPropertyName(type: \(indirectPropertyName.type), name: \(escape(string: indirectPropertyName.name))"
+             } else if type(of: value) == VersionedStream.self {
+                let versionedStream = (value as! VersionedStream)
+                return "VersionedStream(guid: \"\(versionedStream.versionGuid)\", streamName: \(escape(string: versionedStream.streamName.name))"
              } else {
                 fatalError("NYI: \(type(of: value))")
              }
         }
         
-        func dump(property: Property) -> String {
-            if let typedPropertyValue = property as? TypedPropertyValue {
-                return dump(value: typedPropertyValue.value)
-            } else if let dictionary = property as? Dictionary {
-                var s = ""
-                for element in dictionary.entries {
-                    s += "\(element.name): \(element.propertyIdentifier)\n"
-                }
-                
-                return s
-            } else {
-                fatalError("NYI: \(type(of: property))")
-            }
-        }
-        
         func dump(propertySet: PropertySet) -> String {
             var s = ""
             
-            for (identifier, property) in zip(propertySet.propertyIdentifierAndOffsets, propertySet.properties) {
-                s += "\(identifier.propertyIdentifier.hexString): \(dump(property: property))\n"
+            func keyString(propertyIdentifier: PropertyIdentifier) -> String {
+                if let name = propertySet.dictionary?.identifierMapping[propertyIdentifier] {
+                    return name
+                }
+                
+                if propertyIdentifier == CODEPAGE_PROPERTY_IDENTIFIER {
+                    return "PID_CODEPAGE"
+                } else if propertyIdentifier == LOCALE_PROPERTY_IDENTIFIER {
+                    return "PID_LOCALE"
+                } else if propertyIdentifier == MODIFY_TIME_PROPERTY_IDENTIFIER {
+                    return "PID_MODIFY_TIME"
+                } else if propertyIdentifier == SECURITY_PROPERTY_IDENTIFIER {
+                    return "PID_SECURITY"
+                } else if propertyIdentifier == BEHAVIOR_PROPERTY_IDENTIFIER {
+                    return "PID_LOCALE"
+                }
+                
+                return propertyIdentifier.hexString
+            }
+            
+            let sorted = propertySet.properties.sorted { $0.key < $1.key }
+            for (key, value) in sorted {
+                s += "\(keyString(propertyIdentifier: key)): \(dump(value: value))\n"
             }
             
             return s
