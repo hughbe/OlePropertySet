@@ -86,10 +86,6 @@ internal struct TypedPropertyValue {
             self.value = try DATE(dataStream: &dataStream).dateValue
         case .bstr:
             /// VT_BSTR (0x0008) MUST be a CodePageString.
-            guard let codePage = codePage else {
-                throw PropertySetError.corrupted
-            }
-
             self.value = try CodePageString(dataStream: &dataStream, codePage: codePage, isVariant: isVariant).characters
         case .error:
             /// VT_ERROR (0x000A) MUST be a 32-bit unsigned integer representing an HRESULT, as specified in [MS-DTYP] section 2.2.18.
@@ -134,10 +130,6 @@ internal struct TypedPropertyValue {
             self.value = try dataStream.read(endianess: .littleEndian) as UInt32
         case .lpstr:
             /// VT_LPSTR (0x001E) MUST be a CodePageString.
-            guard let codePage = codePage else {
-                throw PropertySetError.corrupted
-            }
-
             self.value = try CodePageString(dataStream: &dataStream, codePage: codePage, isVariant: isVariant).characters
         case .lpwstr:
             /// VT_LPWSTR (0x001F) MUST be a UnicodeString.
@@ -151,34 +143,18 @@ internal struct TypedPropertyValue {
         case .stream:
             /// VT_STREAM (0x0042) MUST be an IndirectPropertyName. The storage representing the (nonsimple) property set MUST have a
             /// stream element with this name.
-            guard let codePage = codePage else {
-                throw PropertySetError.corrupted
-            }
-            
             self.value = try IndirectPropertyName(dataStream: &dataStream, codePage: codePage, isVariant: isVariant, type: type)
         case .storage:
             /// VT_STORAGE (0x0043) MUST be an IndirectPropertyName. The storage representing the (nonsimple) property set MUST have
             /// a storage element with this name.
-            guard let codePage = codePage else {
-                throw PropertySetError.corrupted
-            }
-
             self.value = try IndirectPropertyName(dataStream: &dataStream, codePage: codePage, isVariant: isVariant, type: type)
         case .streamedObject:
             /// VT_STREAMED_OBJECT (0x0044) MUST be an IndirectPropertyName. The storage representing the (nonsimple) property set
             /// MUST have a stream element with this name.
-            guard let codePage = codePage else {
-                throw PropertySetError.corrupted
-            }
-
             self.value =  try IndirectPropertyName(dataStream: &dataStream, codePage: codePage, isVariant: isVariant, type: type)
         case .storedObject:
             /// VT_STORED_OBJECT (0x0045) MUST be an IndirectPropertyName. The storage representing the (nonsimple) property set
             /// MUST have a storage element with this name.
-            guard let codePage = codePage else {
-                throw PropertySetError.corrupted
-            }
-
             self.value =  try IndirectPropertyName(dataStream: &dataStream, codePage: codePage, isVariant: isVariant, type: self.type)
         case .blobObject:
             /// VT_BLOB_OBJECT (0x0046) MUST be a BLOB.
@@ -192,10 +168,6 @@ internal struct TypedPropertyValue {
         case .versionedStream:
             /// VT_VERSIONED_STREAM (0x0049) MUST be a VersionedStream. The storage representing the (non-simple) property set MUST have a
             /// stream element with the name in the StreamName field.
-            guard let codePage = codePage else {
-                throw PropertySetError.corrupted
-            }
-
             self.value = try VersionedStream(dataStream: &dataStream, codePage: codePage, isVariant: isVariant)
         case .vectorI2:
             /// VT_VECTOR | VT_I2 (0x1002) MUST be a VectorHeader followed by a sequence of 16-bit signed integers, followed by zero padding to a
@@ -218,10 +190,6 @@ internal struct TypedPropertyValue {
             self.value = try readVector { try DATE(dataStream: &$0).dateValue }
         case .vectorBstr:
             /// VT_VECTOR | VT_BSTR (0x1008) MUST be a VectorHeader followed by a sequence of CodePageString packets.
-            guard let codePage = codePage else {
-                throw PropertySetError.corrupted
-            }
-
             self.value = try readVector { try CodePageString(dataStream: &$0, codePage: codePage, isVariant: true).characters }
         case .vectorError:
             /// VT_VECTOR | VT_ERROR (0x100A) MUST be a VectorHeader followed by a sequence of 32-bit unsigned integers representing HRESULTs,
@@ -257,10 +225,6 @@ internal struct TypedPropertyValue {
             self.value = try readVector { try $0.read(endianess: .littleEndian) as UInt64 }
         case .vectorLpstr:
             /// VT_VECTOR | VT_LPSTR (0x101E) MUST be a VectorHeader followed by a sequence of CodePageString packets.
-            guard let codePage = codePage else {
-                throw PropertySetError.corrupted
-            }
-
             self.value = try readVector { try CodePageString(dataStream: &$0, codePage: codePage, isVariant: true).characters }
         case .vectorLpwstr:
             /// VT_VECTOR | VT_LPWSTR (0x101F) MUST be a VectorHeader followed by a sequence of UnicodeString packets.
@@ -297,10 +261,6 @@ internal struct TypedPropertyValue {
             self.value = try readArray { try DATE(dataStream: &$0).dateValue }
         case .arrayBstr:
             /// VT_ARRAY | VT_BSTR (0x2008) MUST be an ArrayHeader followed by a sequence of CodePageString packets.
-            guard let codePage = codePage else {
-                throw PropertySetError.corrupted
-            }
-
             self.value = try readArray { try CodePageString(dataStream: &$0, codePage: codePage, isVariant: true) }
         case .arrayError:
             /// VT_ARRAY | VT_ERROR (0x200A) MUST be an ArrayHeader followed by a sequence of 32-bit unsigned integers representing HRESULTs,

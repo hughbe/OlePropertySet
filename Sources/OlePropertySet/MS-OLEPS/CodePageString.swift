@@ -14,7 +14,7 @@ internal struct CodePageString {
     public let size: UInt32
     public let characters: String
     
-    public init(dataStream: inout DataStream, codePage: UInt16, isVariant: Bool) throws {
+    public init(dataStream: inout DataStream, codePage: UInt16?, isVariant: Bool) throws {
         /// Size (4 bytes): The size in bytes of the Characters field, including the null terminator, but not including padding (if any). If the property set's
         /// CodePage property has the value CP_WINUNICODE (0x04B0), then the value MUST be a multiple of 2.
         let size: UInt32 = try dataStream.read(endianess: .littleEndian)

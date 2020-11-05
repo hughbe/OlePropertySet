@@ -19,7 +19,7 @@ public struct IndirectPropertyName {
     public let name: String
     public let type: PropertyType
 
-    public init(dataStream: inout DataStream, codePage: UInt16, isVariant: Bool, type: PropertyType) throws {
+    public init(dataStream: inout DataStream, codePage: UInt16?, isVariant: Bool, type: PropertyType) throws {
         self.name = try CodePageString(dataStream: &dataStream, codePage: codePage, isVariant: isVariant).characters
         self.type = type
     }

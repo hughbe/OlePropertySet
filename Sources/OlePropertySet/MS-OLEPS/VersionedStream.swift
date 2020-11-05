@@ -14,7 +14,7 @@ public struct VersionedStream {
     public let versionGuid: GUID
     public let streamName: IndirectPropertyName
     
-    public init(dataStream: inout DataStream, codePage: UInt16, isVariant: Bool) throws {
+    public init(dataStream: inout DataStream, codePage: UInt16?, isVariant: Bool) throws {
         /// VersionGuid (16 bytes): MUST be a GUID (Packet Version).
         self.versionGuid = try GUID(dataStream: &dataStream)
         
