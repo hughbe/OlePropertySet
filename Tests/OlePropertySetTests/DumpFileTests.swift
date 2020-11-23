@@ -236,6 +236,7 @@ final class DumpFileTests: XCTestCase {
             print(DumpFileTests.dump(propertyStream: summaryInformation))
         }
         for (name, fileExtension) in [
+            ("hughbe/INT_UINT", "bin"),
             ("richardlehane/msoleps/DocumentSummaryInformation", "dat"),
             ("richardlehane/msoleps/SummaryInformation", "dat"),
             ("richardlehane/msoleps/SummaryInformation1", "dat"),

@@ -11,7 +11,7 @@ import WindowsDataTypes
 
 /// [MS-OLEPS] 2.15 TypedPropertyValue
 /// The TypedPropertyValue structure represents the typed value of a property in a property set.
-internal struct TypedPropertyValue {
+public struct TypedPropertyValue {
     public let type: PropertyType
     public let padding: UInt16
     public let value: Any?
