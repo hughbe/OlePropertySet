@@ -3,7 +3,7 @@ import DataStream
 import CompoundFileReader
 @testable import OlePropertySet
 
-final class PropertySetTests: XCTestCase {
+final class PropertySetStreamTests: XCTestCase {
     func testExample() throws {
         do {
             /// [MS-OLEPS] 3.1 SummaryInformation Property Set
@@ -40,7 +40,7 @@ final class PropertySetTests: XCTestCase {
                 0x0E, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0xE5, 0x0D, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00,
                 0x38, 0x4F, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let summaryInformation = try PropertySetStream(dataStream: &dataStream)
             XCTAssertEqual(0x04E4, summaryInformation.propertySet0.getProperty(id: 0x00000001) as Int16?)
             XCTAssertEqual("Joe's document", summaryInformation.propertySet0.getProperty(id: 0x00000002) as String?)
@@ -114,12 +114,12 @@ final class PropertySetTests: XCTestCase {
                 0x0C, 0x10, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x11, 0x00, 0x00, 0x00, 0xA9, 0x00, 0x00, 0x00,
                 0x14, 0x00, 0x00, 0x00, 0xA9, 0x00, 0x76, 0x99, 0x3B, 0x22, 0x10, 0x9C, 
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let summaryInformation = try PropertySetStream(dataStream: &dataStream)
             print(DumpFileTests.dump(propertyStream: summaryInformation))
         }
         do {
-            let data = try getData(name: "hughbe/sample", fileExtension: "doc")
+            let data = try getData(name: "sample", fileExtension: "doc")
             let file = try CompoundFile(data: data)
             var rootStorage = file.rootStorage
             var dataStream = rootStorage.children["\u{0005}SummaryInformation"]!.dataStream

@@ -1,4 +1,4 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.3
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -13,7 +13,7 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(url: "https://github.com/hughbe/DataStream", from: "1.0.0"),
+        .package(url: "https://github.com/hughbe/DataStream", from: "2.0.0"),
         .package(url: "https://github.com/hughbe/WindowsDataTypes", from: "1.0.0"),
         .package(url: "https://github.com/hughbe/OleAutomationDataTypes", from: "1.0.0"),
         .package(url: "https://github.com/hughbe/CompoundFileReader", from: "1.0.0")
@@ -26,6 +26,7 @@ let package = Package(
             dependencies: ["DataStream", "OleAutomationDataTypes", "WindowsDataTypes"]),
         .testTarget(
             name: "OlePropertySetTests",
-            dependencies: ["OlePropertySet", "CompoundFileReader"]),
+            dependencies: ["OlePropertySet", "CompoundFileReader"],
+            resources: [.process("Resources")]),
     ]
 )

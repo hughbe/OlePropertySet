@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/hughbe/CompoundFileReader",
         "state": {
           "branch": null,
-          "revision": "ebd89896d2e3f4a8beebea1b869afb239f4e0025",
-          "version": "1.0.8"
+          "revision": "68d65eb68a0df6bb90261dbb0f6191f1609755f3",
+          "version": "1.0.10"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/hughbe/DataStream",
         "state": {
           "branch": null,
-          "revision": "6136e69031194a6518cdc3316d79ca83a0a2acfd",
-          "version": "1.2.1"
+          "revision": "858175a666cd9d9d45b2d9a364dba61a41940120",
+          "version": "2.0.3"
         }
       },
       {
@@ -24,7 +24,16 @@
         "repositoryURL": "https://github.com/hughbe/OleAutomationDataTypes",
         "state": {
           "branch": null,
-          "revision": "41e199d65c43341876802f47d31f0f864ff20c0a",
+          "revision": "0fa5feac6b60c20c24b2426ef49dfe4b3689fbed",
+          "version": "1.0.2"
+        }
+      },
+      {
+        "package": "BitField",
+        "repositoryURL": "https://github.com/hughbe/SwiftBitField",
+        "state": {
+          "branch": null,
+          "revision": "993f2e4ec4d4edfc598abd3e87cc813e937cffc1",
           "version": "1.0.0"
         }
       },
@@ -33,8 +42,8 @@
         "repositoryURL": "https://github.com/hughbe/WindowsDataTypes",
         "state": {
           "branch": null,
-          "revision": "82b4b6691dfa14d59663500150521114346328c0",
-          "version": "1.0.6"
+          "revision": "2d0efa7a0fbdb3eae9ff99456cb864382b883f4d",
+          "version": "1.0.10"
         }
       }
     ]

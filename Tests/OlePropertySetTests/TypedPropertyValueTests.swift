@@ -12,7 +12,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x02, 0x00, 0x00, 0x00, 0xE4, 0x04, 0x00, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: nil)
             XCTAssertEqual(.i2, property.type)
             XCTAssertEqual(0, property.padding)
@@ -26,7 +26,7 @@ final class TypedPropertyValueTests: XCTestCase {
                 0x1E, 0x00, 0x00, 0x00, 0x0F, 0x00, 0x00, 0x00, 0x4A, 0x6F, 0x65, 0x27, 0x73, 0x20, 0x64, 0x6F,
                 0x63, 0x75, 0x6D, 0x65, 0x6E, 0x74, 0x00, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: 0x04E4)
             XCTAssertEqual(.lpstr, property.type)
             XCTAssertEqual(0, property.padding)
@@ -39,7 +39,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x1E, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x4A, 0x6F, 0x62, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: 0x04E4)
             XCTAssertEqual(.lpstr, property.type)
             XCTAssertEqual(0, property.padding)
@@ -52,7 +52,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x1E, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x4A, 0x6F, 0x65, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: 0x04E4)
             XCTAssertEqual(.lpstr, property.type)
             XCTAssertEqual(0, property.padding)
@@ -65,7 +65,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x1E, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: 0x04E4)
             XCTAssertEqual(.lpstr, property.type)
             XCTAssertEqual(0, property.padding)
@@ -78,7 +78,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x1E, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: 0x04E4)
             XCTAssertEqual(.lpstr, property.type)
             XCTAssertEqual(0, property.padding)
@@ -91,7 +91,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x1E, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x4E, 0x6F, 0x72, 0x6D, 0x61, 0x6C, 0x2E, 0x64, 0x6F, 0x74, 0x6D, 0x00,
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: 0x04E4)
             XCTAssertEqual(.lpstr, property.type)
             XCTAssertEqual(0, property.padding)
@@ -104,7 +104,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x1E, 0x00, 0x00, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x43, 0x6F, 0x72, 0x6E, 0x65, 0x6C, 0x69, 0x75, 0x73, 0x00, 0x00, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: 0x04E4)
             XCTAssertEqual(.lpstr, property.type)
             XCTAssertEqual(0, property.padding)
@@ -117,7 +117,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x1E, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x36, 0x36, 0x00, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: 0x04E4)
             XCTAssertEqual(.lpstr, property.type)
             XCTAssertEqual(0, property.padding)
@@ -131,7 +131,7 @@ final class TypedPropertyValueTests: XCTestCase {
                 0x1E, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00, 0x4D, 0x69, 0x63, 0x72, 0x6F, 0x73, 0x6F, 0x66,
                 0x74, 0x20, 0x4F, 0x66, 0x66, 0x69, 0x63, 0x65, 0x20, 0x57, 0x6F, 0x72, 0x64, 0x00, 0x00, 0x00,
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: 0x04E4)
             XCTAssertEqual(.lpstr, property.type)
             XCTAssertEqual(0, property.padding)
@@ -144,7 +144,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x40, 0x00, 0x00, 0x00, 0x00, 0x6E, 0xD9, 0xA2, 0x42, 0x00, 0x00, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: nil)
             XCTAssertEqual(.filetime, property.type)
             XCTAssertEqual(0, property.padding)
@@ -157,7 +157,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x40, 0x00, 0x00, 0x00, 0x00, 0x16, 0xD0, 0xA1, 0x4E, 0x8E, 0xC6, 0x01
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: nil)
             XCTAssertEqual(.filetime, property.type)
             XCTAssertEqual(0, property.padding)
@@ -170,7 +170,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x40, 0x00, 0x00, 0x00, 0x00, 0x1C, 0xF2, 0xD5, 0x2A, 0xCE, 0xC6, 0x01
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: nil)
             XCTAssertEqual(.filetime, property.type)
             XCTAssertEqual(0, property.padding)
@@ -183,7 +183,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x40, 0x00, 0x00, 0x00, 0x00, 0x3C, 0xD2, 0x73, 0xDD, 0x80, 0xC8, 0x01
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: nil)
             XCTAssertEqual(.filetime, property.type)
             XCTAssertEqual(0, property.padding)
@@ -196,7 +196,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x03, 0x00, 0x00, 0x00, 0x0E, 0x00, 0x00, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: nil)
             XCTAssertEqual(.i4, property.type)
             XCTAssertEqual(0, property.padding)
@@ -209,7 +209,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x03, 0x00, 0x00, 0x00, 0xE5, 0x0D, 0x00, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: nil)
             XCTAssertEqual(.i4, property.type)
             XCTAssertEqual(0, property.padding)
@@ -222,7 +222,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x03, 0x00, 0x00, 0x00, 0x38, 0x4F, 0x00, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: nil)
             XCTAssertEqual(.i4, property.type)
             XCTAssertEqual(0, property.padding)
@@ -235,7 +235,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: nil)
             XCTAssertEqual(.i4, property.type)
             XCTAssertEqual(0, property.padding)
@@ -248,7 +248,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x02, 0x00, 0x00, 0x00, 0xB0, 0x04, 0x00, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: nil)
             XCTAssertEqual(.i2, property.type)
             XCTAssertEqual(0, property.padding)
@@ -261,7 +261,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x13, 0x00, 0x00, 0x00, 0x00, 0x00, 0x09, 0x08
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: nil)
             XCTAssertEqual(.ui4, property.type)
             XCTAssertEqual(0, property.padding)
@@ -274,7 +274,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x13, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: nil)
             XCTAssertEqual(.ui4, property.type)
             XCTAssertEqual(0, property.padding)
@@ -287,7 +287,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x08, 0x00, 0x00, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x47, 0x00, 0x72, 0x00, 0x65, 0x00, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00,
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: CodePageString.CP_WINUNICODE)
             XCTAssertEqual(.bstr, property.type)
             XCTAssertEqual(0, property.padding)
@@ -300,7 +300,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x49, 0x00, 0x00, 0x00, 0xCA, 0x84, 0x95, 0xF9, 0x23, 0xCA, 0x0B, 0x47, 0x83, 0x94, 0x22, 0x01, 0x77, 0x90, 0x7A, 0xAD, 0x0C, 0x00, 0x00, 0x00, 0x70, 0x00, 0x72, 0x00, 0x6F, 0x00, 0x70, 0x00, 0x36, 0x00, 0x00, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: CodePageString.CP_WINUNICODE)
             XCTAssertEqual(.versionedStream, property.type)
             XCTAssertEqual(0, property.padding)
@@ -315,7 +315,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x06, 0x00, 0x00, 0x00, 0x00, 0x50, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: CodePageString.CP_WINUNICODE)
             XCTAssertEqual(.cy, property.type)
             XCTAssertEqual(0, property.padding)
@@ -328,7 +328,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x45, 0x00, 0x00, 0x00, 0x0E, 0x00, 0x00, 0x00, 0x70, 0x00, 0x72, 0x00, 0x6F, 0x00, 0x70, 0x00, 0x31, 0x00, 0x32, 0x00, 0x00, 0x00, 0x00, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: CodePageString.CP_WINUNICODE)
             XCTAssertEqual(.storedObject, property.type)
             XCTAssertEqual(0, property.padding)
@@ -342,7 +342,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x10, 0x20, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xF8, 0x14, 0x17, 0x12, 0x87, 0x45, 0x29, 0x25, 0x11, 0x33, 0x56, 0x79, 0xA2, 0x9C, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: CodePageString.CP_WINUNICODE)
             XCTAssertEqual(.arrayI1, property.type)
             XCTAssertEqual(0, property.padding)
@@ -355,7 +355,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x0C, 0x10, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x11, 0x00, 0x00, 0x00, 0xA9, 0x00, 0x00, 0x00, 0x14, 0x00, 0x00, 0x00, 0xA9, 0x00, 0x76, 0x99, 0x3B, 0x22, 0x10, 0x9C
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: CodePageString.CP_WINUNICODE)
             XCTAssertEqual(.vectorVariant, property.type)
             XCTAssertEqual(0, property.padding)
@@ -371,7 +371,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x11, 0x00, 0x00, 0x00, 0xA9, 0x00, 0x00, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: CodePageString.CP_WINUNICODE)
             XCTAssertEqual(.ui1, property.type)
             XCTAssertEqual(0, property.padding)
@@ -384,7 +384,7 @@ final class TypedPropertyValueTests: XCTestCase {
             let data = Data([
                 0x14, 0x00, 0x00, 0x00, 0xA9, 0x00, 0x76, 0x99, 0x3B, 0x22, 0x10, 0x9C
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let property = try TypedPropertyValue(dataStream: &dataStream, codePage: CodePageString.CP_WINUNICODE)
             XCTAssertEqual(.i8, property.type)
             XCTAssertEqual(0, property.padding)

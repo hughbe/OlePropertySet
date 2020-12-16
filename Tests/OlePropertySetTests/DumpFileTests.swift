@@ -126,32 +126,39 @@ final class DumpFileTests: XCTestCase {
     
     func testDump() throws {
         for (name, fileExtension, storage) in [
-            ("hughbe/sample", "doc", "\u{0005}SummaryInformation"),
-            ("hughbe/sample", "doc", "\u{0005}DocumentSummaryInformation"),
-            ("hughbe/7z1900-x64", "msi", "\u{0005}SummaryInformation"),
-            ("ironfede/openmcdf/_Test", "ppt", "\u{0005}SummaryInformation"),
-            ("ironfede/openmcdf/_Test", "ppt", "\u{0005}DocumentSummaryInformation"),
-            ("ironfede/openmcdf/2_MB-W", "ppt", "\u{0005}SummaryInformation"),
-            ("ironfede/openmcdf/2_MB-W", "ppt", "\u{0005}DocumentSummaryInformation"),
-            ("ironfede/openmcdf/english.presets", "doc", "\u{0005}SummaryInformation"),
-            ("ironfede/openmcdf/english.presets", "doc", "\u{0005}DocumentSummaryInformation"),
-            ("ironfede/openmcdf/mediationform", "doc", "\u{0005}SummaryInformation"),
-            ("ironfede/openmcdf/mediationform", "doc", "\u{0005}DocumentSummaryInformation"),
-            ("ironfede/openmcdf/poWEr.prelim", "doc", "\u{0005}SummaryInformation"),
-            ("ironfede/openmcdf/poWEr.prelim", "doc", "\u{0005}DocumentSummaryInformation"),
-            ("ironfede/openmcdf/report_name_fix", "xls", "\u{0005}SummaryInformation"),
-            ("ironfede/openmcdf/report_name_fix", "xls", "\u{0005}DocumentSummaryInformation"),
-            ("ironfede/openmcdf/report", "xls", "\u{0005}SummaryInformation"),
-            ("ironfede/openmcdf/report", "xls", "\u{0005}DocumentSummaryInformation"),
-            ("ironfede/openmcdf/reportREAD", "xls", "\u{0005}SummaryInformation"),
-            ("ironfede/openmcdf/reportREAD", "xls", "\u{0005}DocumentSummaryInformation"),
-            ("ironfede/openmcdf/wstr_presets", "doc", "\u{0005}SummaryInformation"),
-            ("ironfede/openmcdf/wstr_presets", "doc", "\u{0005}DocumentSummaryInformation"),
-            ("decalage2/olefile/test-ole-file", "doc", "\u{0005}SummaryInformation"),
-            ("decalage2/olefile/test-ole-file", "doc", "\u{0005}DocumentSummaryInformation"),
-            ("aquasync/ruby-ole/test_word_6", "doc", "\u{0005}SummaryInformation"),
-            ("aquasync/ruby-ole/test_word_95", "doc", "\u{0005}SummaryInformation"),
-            ("aquasync/ruby-ole/test_word_97", "doc", "\u{0005}SummaryInformation"),
+            /* hughbe */
+            ("sample", "doc", "\u{0005}SummaryInformation"),
+            ("sample", "doc", "\u{0005}DocumentSummaryInformation"),
+            ("7z1900-x64", "msi", "\u{0005}SummaryInformation"),
+            
+            /* ironfede/openmcdf */
+            ("_Test", "ppt", "\u{0005}SummaryInformation"),
+            ("_Test", "ppt", "\u{0005}DocumentSummaryInformation"),
+            ("2_MB-W", "ppt", "\u{0005}SummaryInformation"),
+            ("2_MB-W", "ppt", "\u{0005}DocumentSummaryInformation"),
+            ("english.presets", "doc", "\u{0005}SummaryInformation"),
+            ("english.presets", "doc", "\u{0005}DocumentSummaryInformation"),
+            ("mediationform", "doc", "\u{0005}SummaryInformation"),
+            ("mediationform", "doc", "\u{0005}DocumentSummaryInformation"),
+            ("poWEr.prelim", "doc", "\u{0005}SummaryInformation"),
+            ("poWEr.prelim", "doc", "\u{0005}DocumentSummaryInformation"),
+            ("report_name_fix", "xls", "\u{0005}SummaryInformation"),
+            ("report_name_fix", "xls", "\u{0005}DocumentSummaryInformation"),
+            ("report", "xls", "\u{0005}SummaryInformation"),
+            ("report", "xls", "\u{0005}DocumentSummaryInformation"),
+            ("reportREAD", "xls", "\u{0005}SummaryInformation"),
+            ("reportREAD", "xls", "\u{0005}DocumentSummaryInformation"),
+            ("wstr_presets", "doc", "\u{0005}SummaryInformation"),
+            ("wstr_presets", "doc", "\u{0005}DocumentSummaryInformation"),
+            
+            /* decalage2/olefile/ */
+            ("test-ole-file", "doc", "\u{0005}SummaryInformation"),
+            ("test-ole-file", "doc", "\u{0005}DocumentSummaryInformation"),
+            
+            /* aquasync/ruby-ole */
+            ("test_word_6", "doc", "\u{0005}SummaryInformation"),
+            ("test_word_95", "doc", "\u{0005}SummaryInformation"),
+            ("test_word_97", "doc", "\u{0005}SummaryInformation"),
         ] {
             let data = try getData(name: name, fileExtension: fileExtension)
             let file = try CompoundFile(data: data)
@@ -191,7 +198,7 @@ final class DumpFileTests: XCTestCase {
                 0x0E, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0xE5, 0x0D, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00,
                 0x38, 0x4F, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let summaryInformation = try PropertySetStream(dataStream: &dataStream)
             print(DumpFileTests.dump(propertyStream: summaryInformation))
         }
@@ -231,18 +238,21 @@ final class DumpFileTests: XCTestCase {
                 0x0C, 0x10, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x11, 0x00, 0x00, 0x00, 0xA9, 0x00, 0x00, 0x00,
                 0x14, 0x00, 0x00, 0x00, 0xA9, 0x00, 0x76, 0x99, 0x3B, 0x22, 0x10, 0x9C,
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let summaryInformation = try PropertySetStream(dataStream: &dataStream)
             print(DumpFileTests.dump(propertyStream: summaryInformation))
         }
         for (name, fileExtension) in [
-            ("hughbe/INT_UINT", "bin"),
-            ("richardlehane/msoleps/DocumentSummaryInformation", "dat"),
-            ("richardlehane/msoleps/SummaryInformation", "dat"),
-            ("richardlehane/msoleps/SummaryInformation1", "dat"),
+            /* hughbe */
+            ("INT_UINT", "bin"),
+            
+            /* richardlehane/msoleps */
+            ("DocumentSummaryInformation", "dat"),
+            ("SummaryInformation", "dat"),
+            ("SummaryInformation1", "dat"),
         ] {
             let data = try getData(name: name, fileExtension: fileExtension)
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let summaryInformation = try PropertySetStream(dataStream: &dataStream)
             print(DumpFileTests.dump(propertyStream: summaryInformation))
         }

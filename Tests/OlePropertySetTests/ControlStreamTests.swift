@@ -13,7 +13,7 @@ final class ControlStreamTests: XCTestCase {
             let data = Data([
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
             ])
-            var dataStream = DataStream(data: data)
+            var dataStream = DataStream(data)
             let stream = try ControlStream(dataStream: &dataStream, size: dataStream.count)
             XCTAssertEqual(0x0000, stream.reserved1)
             XCTAssertEqual(0x0000, stream.reserved2)
